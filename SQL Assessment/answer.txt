@@ -1,0 +1,62 @@
+--1
+select 
+ e.HomeState as State,
+ count(e.EmployeeID) as NumberOfEmployees
+from Employee e
+group by 
+  e.HomeState
+  
+--2
+select 
+  c.CompanyName as CompanyName,
+  count(e.EmployeeID) as NumberOfEmployees
+from Employment e
+join Company c on
+  e.CompanyID = c.CompanyID
+where 
+  e.EmploymentEndDate is null
+group by 
+  c.CompanyName
+  
+--3
+select 
+  e.FirstName as EmployeeFirstName,
+  e.LastName as EmployeeLastName
+from Employee e
+join PlanEnrollment pe on 
+  e.EmployeeID = pe.EmployeeID
+join Plan p on
+  pe.PlanID = p.PlanID
+where 
+  DATEDIFF(year, e.BirthDate, getdate()) >= 26 and
+  pe.EnrollmentEndDate is null and
+  p.PlanType = 'Medical'
+  
+--4
+select 
+  e.FirstName as EmployeeFirstName,
+  e.LastName as EmployeeLastName
+from
+  Employee e
+join PlanEnrollment pe on
+  e.EmployeeID = pe.EmployeeID
+join Plan p on
+  pe.PlanID = p.PlanID
+where
+  p.PlanType in ('Medical', 'Dental', 'Vision')
+
+--5
+select top 1
+   c.CompanyName as CompanyName,
+   e.FirstName + ' ' + e.LastName as EmployeeName,
+   e2.EmploymentStartDate as EmploymentStartDate
+from Employee e
+join Employment e2 on
+  e.EmployeeID = e2.EmployeeID
+join Company c on 
+  e2.CompanyID = c.CompanyID
+where
+  e2.EmploymentEndDate is null
+order by
+  e2.EmploymentStartDate
+asc
